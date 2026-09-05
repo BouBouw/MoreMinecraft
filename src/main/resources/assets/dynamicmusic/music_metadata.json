@@ -1,0 +1,95 @@
+{
+  "_comment": "Metadonnees affichees par la vignette. La cle est l'emplacement du fichier audio tel que Minecraft le voit : <namespace>:<chemin sous sounds/, sans .ogg>. Une piste absente de cette table reste affichee, avec un titre deduit du nom de fichier et la pochette par defaut.",
+  "namespaces": {
+    "minecraft": {
+      "artist": "Minecraft",
+      "cover": "dynamicmusic:textures/gui/music/default.png"
+    }
+  },
+  "tracks": {
+    "dynamicmusic:music/classic": {
+      "title": "Take You With Me",
+      "artist": "Jellyraymen",
+      "album": "Take You With Me - Single",
+      "duration": 284,
+      "cover": "dynamicmusic:textures/gui/music/classic.png"
+    },
+    "dynamicmusic:music/biome/plains": {
+      "title": "Busy Bees",
+      "artist": "Jellyraymen",
+      "album": "Busy Bees - Single",
+      "duration": 129,
+      "cover": "dynamicmusic:textures/gui/music/plains.png"
+    },
+    "dynamicmusic:music/biome/snowy": {
+      "title": "Solace",
+      "artist": "Jellyraymen",
+      "album": "Solace - Single",
+      "duration": 163,
+      "cover": "dynamicmusic:textures/gui/music/snowy.png"
+    },
+    "dynamicmusic:music/biome/water": {
+      "title": "Lucidity",
+      "artist": "Jellyraymen",
+      "album": "Lucidity - Single",
+      "duration": 193,
+      "cover": "dynamicmusic:textures/gui/music/water.png"
+    },
+    "dynamicmusic:music/dimension/nether": {
+      "title": "Ballad of the Mirrors",
+      "artist": "Jellyraymen",
+      "album": "Ballad of the Mirrors - Single",
+      "duration": 191,
+      "cover": "dynamicmusic:textures/gui/music/nether.png"
+    },
+    "dynamicmusic:music/dimension/end": {
+      "title": "Undefined",
+      "artist": "Jellyraymen",
+      "album": "Undefined - Single",
+      "duration": 228,
+      "cover": "dynamicmusic:textures/gui/music/end.png"
+    },
+    "dynamicmusic:music/classic_2": {
+      "title": "Under The Aurora",
+      "artist": "Cheryltje",
+      "album": "",
+      "duration": 220,
+      "cover": "dynamicmusic:textures/gui/music/classic_2.png"
+    },
+    "dynamicmusic:music/night": {
+      "title": "Grove",
+      "artist": "Cheryltje",
+      "album": "",
+      "duration": 94,
+      "cover": "dynamicmusic:textures/gui/music/night.png"
+    },
+    "dynamicmusic:music/dimension/end_2": {
+      "title": "secrets beneath",
+      "artist": "Cheryltje",
+      "album": "",
+      "duration": 184,
+      "cover": "dynamicmusic:textures/gui/music/end_2.png"
+    },
+    "dynamicmusic:music/dimension/nether_2": {
+      "title": "After Nostalgia, Melancholia",
+      "artist": "Cheryltje",
+      "album": "",
+      "duration": 133,
+      "cover": "dynamicmusic:textures/gui/music/nether_2.png"
+    },
+    "dynamicmusic:music/dimension/nether_3": {
+      "title": "A Place With No Hope",
+      "artist": "Cheryltje",
+      "album": "",
+      "duration": 155,
+      "cover": "dynamicmusic:textures/gui/music/nether_3.png"
+    },
+    "dynamicmusic:music/biome/water_2": {
+      "title": "Into the Ocean",
+      "artist": "hysenn",
+      "album": "Into the Ocean",
+      "duration": 326,
+      "cover": "dynamicmusic:textures/gui/music/water_2.png"
+    }
+  }
+}

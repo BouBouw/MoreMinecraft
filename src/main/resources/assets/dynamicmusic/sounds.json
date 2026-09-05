@@ -1,0 +1,97 @@
+{
+  "music.classic": {
+    "subtitle": "dynamicmusic.subtitle.classic",
+    "sounds": [
+      {
+        "name": "dynamicmusic:music/classic",
+        "stream": true,
+        "volume": 1.0
+      },
+      {
+        "name": "dynamicmusic:music/classic_2",
+        "stream": true,
+        "volume": 1.0
+      }
+    ]
+  },
+  "music.night": {
+    "subtitle": "dynamicmusic.subtitle.night",
+    "sounds": [
+      {
+        "name": "dynamicmusic:music/night",
+        "stream": true,
+        "volume": 1.0
+      }
+    ]
+  },
+  "music.biome.plains": {
+    "subtitle": "dynamicmusic.subtitle.ambient",
+    "sounds": [
+      {
+        "name": "dynamicmusic:music/biome/plains",
+        "stream": true,
+        "volume": 1.0
+      }
+    ]
+  },
+  "music.biome.snowy": {
+    "subtitle": "dynamicmusic.subtitle.ambient",
+    "sounds": [
+      {
+        "name": "dynamicmusic:music/biome/snowy",
+        "stream": true,
+        "volume": 1.0
+      }
+    ]
+  },
+  "music.biome.ocean": {
+    "subtitle": "dynamicmusic.subtitle.ambient",
+    "sounds": [
+      {
+        "name": "dynamicmusic:music/biome/water",
+        "stream": true,
+        "volume": 1.0
+      },
+      {
+        "name": "dynamicmusic:music/biome/water_2",
+        "stream": true,
+        "volume": 1.0
+      }
+    ]
+  },
+  "music.dimension.nether": {
+    "subtitle": "dynamicmusic.subtitle.ambient",
+    "sounds": [
+      {
+        "name": "dynamicmusic:music/dimension/nether",
+        "stream": true,
+        "volume": 1.0
+      },
+      {
+        "name": "dynamicmusic:music/dimension/nether_2",
+        "stream": true,
+        "volume": 1.0
+      },
+      {
+        "name": "dynamicmusic:music/dimension/nether_3",
+        "stream": true,
+        "volume": 1.0
+      }
+    ]
+  },
+  "music.dimension.end": {
+    "subtitle": "dynamicmusic.subtitle.ambient",
+    "sounds": [
+      {
+        "name": "dynamicmusic:music/dimension/end",
+        "stream": true,
+        "volume": 1.0
+      },
+      {
+        "name": "dynamicmusic:music/dimension/end_2",
+        "stream": true,
+        "volume": 1.0
+      }
+    ]
+  }
+}

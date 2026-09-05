@@ -1,0 +1,9 @@
+# Normalisation des fins de ligne : LF dans le depot, natif dans la copie locale
+* text=auto eol=lf
+*.bat text eol=crlf
+gradlew text eol=lf
+
+# Binaires : jamais de conversion ni de diff textuel
+*.ogg binary
+*.png binary
+*.jar binary

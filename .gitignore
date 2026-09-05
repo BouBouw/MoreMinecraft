@@ -1,0 +1,26 @@
+# Gradle
+.gradle/
+build/
+out/
+run/
+runs/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+bin/
+.vscode/
+
+# Forge
+forge*changelog.txt
+
+# Runs et generation de developpement
+run-data/
+src/generated/
+.eclipse/
+*.launch

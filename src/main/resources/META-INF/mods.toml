@@ -1,0 +1,33 @@
+modLoader = "javafml"
+loaderVersion = "[49,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/BouBou/DynamicMusic/issues"
+
+[[mods]]
+    modId = "dynamicmusic"
+    version = "1.0.0"
+    displayName = "DynamicMusic"
+    logoFile = ""
+    authors = "BouBou"
+    description = '''
+Musique d'ambiance dynamique et contextuelle.
+Le mod analyse en continu l'etat du joueur (sante, monstres proches, immersion,
+meteo, profondeur, biome, dimension) et enchaine les pistes avec un fondu croise.
+Mod entierement cote client : aucune installation serveur necessaire.
+'''
+    # Mod client uniquement : ne bloque pas la connexion a un serveur qui ne l'a pas.
+    displayTest = "IGNORE_ALL_VERSION"
+
+[[dependencies.dynamicmusic]]
+    modId = "forge"
+    mandatory = true
+    versionRange = "[49,)"
+    ordering = "NONE"
+    side = "CLIENT"
+
+[[dependencies.dynamicmusic]]
+    modId = "minecraft"
+    mandatory = true
+    versionRange = "[1.20.3,1.21)"
+    ordering = "NONE"
+    side = "CLIENT"

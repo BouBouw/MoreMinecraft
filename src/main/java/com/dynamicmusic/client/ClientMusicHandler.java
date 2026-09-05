@@ -318,13 +318,25 @@ public final class ClientMusicHandler {
         // et l'End sont donc ecartes sans test supplementaire.
         if (DynamicMusicConfig.triggerNight
                 && seesSky
-                && level.isNight()
+                && isNight(level)
                 && hasTrack(MusicContext.NIGHT)) {
             return MusicContext.NIGHT;
         }
 
         // --- 7, 8 et 9. Biome, dimension puis classique ------------------
         return resolveAmbient(level, pos);
+    }
+
+    /**
+     * Vrai s'il fait nuit dans une dimension a cycle jour-nuit.
+     *
+     * <p>{@code Level.isNight()} a disparu en 1.21.5. On le reconstruit avec les
+     * primitives qui, elles, n'ont pas bouge : la lumiere celeste attenuee et
+     * l'heure figee de la dimension. Le Nether et l'End ont une heure figee et
+     * sont donc ecartes, comme avant.</p>
+     */
+    private static boolean isNight(ClientLevel level) {
+        return !level.dimensionType().hasFixedTime() && level.getSkyDarken() >= 4;
     }
 
     /** Vrai si le biome courant connait des precipitations (pluie ou neige). */

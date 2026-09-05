@@ -1,10 +1,10 @@
 {
   "pack": {
     "description": "DynamicMusic resources",
-    "pack_format": 46,
+    "pack_format": 55,
     "supported_formats": [
-      46,
-      46
+      55,
+      55
     ]
   }
 }

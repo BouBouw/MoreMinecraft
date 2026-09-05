@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 
 /**
@@ -97,7 +97,7 @@ public final class MusicNotifier {
     }
 
     private void adopt(SoundInstance instance) {
-        final ResourceLocation trackId = trackIdOf(instance);
+        final Identifier trackId = trackIdOf(instance);
         if (trackId == null) {
             return;
         }
@@ -115,12 +115,12 @@ public final class MusicNotifier {
      * {@code getSound()}, qui designe la variante tiree au sort, a l'emplacement
      * de l'evenement sonore, qui peut en regrouper plusieurs.
      */
-    private static ResourceLocation trackIdOf(SoundInstance instance) {
+    private static Identifier trackIdOf(SoundInstance instance) {
         final Sound sound = instance.getSound();
         if (sound != null && sound.getLocation() != null) {
             return sound.getLocation();
         }
-        return instance.getLocation();
+        return instance.getIdentifier();
     }
 
     private void clear() {

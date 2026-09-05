@@ -1,7 +1,7 @@
 package com.dynamicmusic.sound;
 
 import com.dynamicmusic.DynamicMusic;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.DeferredRegister;
@@ -13,7 +13,7 @@ import net.minecraftforge.registries.RegistryObject;
  *
  * <p>Le nom d'enregistrement correspond exactement a la cle utilisee dans
  * {@code assets/dynamicmusic/sounds.json}. Exemple : {@code music.biome.ocean}
- * donne le ResourceLocation {@code dynamicmusic:music.biome.ocean}.</p>
+ * donne le Identifier {@code dynamicmusic:music.biome.ocean}.</p>
  *
  * <p><b>Tous les evenements ci-dessous sont enregistres, mais seuls ceux
  * declares dans {@code sounds.json} disposent reellement d'une piste.</b>
@@ -107,7 +107,7 @@ public final class ModSounds {
      */
     private static RegistryObject<SoundEvent> register(String name) {
         return SOUND_EVENTS.register(name,
-                () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(DynamicMusic.MOD_ID, name)));
+                () -> SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(DynamicMusic.MOD_ID, name)));
     }
 
     /** Branche le DeferredRegister sur le bus d'evenements du mod. */

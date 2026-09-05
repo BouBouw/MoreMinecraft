@@ -2,7 +2,7 @@ package com.dynamicmusic.sound;
 
 import com.dynamicmusic.DynamicMusic;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
@@ -53,6 +53,6 @@ public final class ModBiomeTags {
     public static final TagKey<Biome> IS_PLAINS = create("is_plains");
 
     private static TagKey<Biome> create(String name) {
-        return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(DynamicMusic.MOD_ID, name));
+        return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(DynamicMusic.MOD_ID, name));
     }
 }

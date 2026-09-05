@@ -2,7 +2,7 @@ package com.dynamicmusic.client;
 
 import com.dynamicmusic.DynamicMusic;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -31,20 +31,20 @@ public final class MusicMetadata implements ResourceManagerReloadListener {
 
     public static final MusicMetadata INSTANCE = new MusicMetadata();
 
-    private static final ResourceLocation FILE =
-            ResourceLocation.fromNamespaceAndPath(DynamicMusic.MOD_ID, "music_metadata.json");
+    private static final Identifier FILE =
+            Identifier.fromNamespaceAndPath(DynamicMusic.MOD_ID, "music_metadata.json");
 
-    public static final ResourceLocation DEFAULT_COVER =
-            ResourceLocation.fromNamespaceAndPath(DynamicMusic.MOD_ID, "textures/gui/music/default.png");
+    public static final Identifier DEFAULT_COVER =
+            Identifier.fromNamespaceAndPath(DynamicMusic.MOD_ID, "textures/gui/music/default.png");
 
     /** Table declaree, indexee par emplacement de fichier audio. */
-    private final Map<ResourceLocation, MusicInfo> tracks = new HashMap<>();
+    private final Map<Identifier, MusicInfo> tracks = new HashMap<>();
     /** Valeurs par defaut par namespace, pour les pistes non declarees. */
     private final Map<String, NamespaceDefaults> namespaces = new HashMap<>();
     /** Cache des fiches deduites, pour ne pas les reconstruire a chaque morceau. */
-    private final Map<ResourceLocation, MusicInfo> derived = new HashMap<>();
+    private final Map<Identifier, MusicInfo> derived = new HashMap<>();
 
-    private record NamespaceDefaults(String artist, ResourceLocation cover) {
+    private record NamespaceDefaults(String artist, Identifier cover) {
     }
 
     private MusicMetadata() {
@@ -87,13 +87,13 @@ public final class MusicMetadata implements ResourceManagerReloadListener {
         }
         final JsonObject section = GsonHelper.getAsJsonObject(root, "tracks");
         for (String key : section.keySet()) {
-            final ResourceLocation id = ResourceLocation.tryParse(key);
+            final Identifier id = Identifier.tryParse(key);
             if (id == null) {
                 DynamicMusic.LOGGER.warn("[DynamicMusic] Cle de piste invalide : {}", key);
                 continue;
             }
             final JsonObject entry = GsonHelper.getAsJsonObject(section, key);
-            final ResourceLocation cover = readCover(entry);
+            final Identifier cover = readCover(entry);
             this.tracks.put(id, new MusicInfo(
                     id,
                     GsonHelper.getAsString(entry, "title", fallbackTitle(id)),
@@ -104,16 +104,16 @@ public final class MusicMetadata implements ResourceManagerReloadListener {
         }
     }
 
-    private static ResourceLocation readCover(JsonObject entry) {
+    private static Identifier readCover(JsonObject entry) {
         final String raw = GsonHelper.getAsString(entry, "cover", "");
-        return raw.isEmpty() ? null : ResourceLocation.tryParse(raw);
+        return raw.isEmpty() ? null : Identifier.tryParse(raw);
     }
 
     /**
      * Fiche d'une piste. Ne renvoie jamais {@code null} : une piste inconnue
      * recoit un titre deduit de son nom de fichier.
      */
-    public MusicInfo get(ResourceLocation trackId) {
+    public MusicInfo get(Identifier trackId) {
         final MusicInfo declared = this.tracks.get(trackId);
         if (declared != null) {
             return declared;
@@ -121,17 +121,17 @@ public final class MusicMetadata implements ResourceManagerReloadListener {
         return this.derived.computeIfAbsent(trackId, MusicMetadata::derive);
     }
 
-    private static MusicInfo derive(ResourceLocation id) {
+    private static MusicInfo derive(Identifier id) {
         final NamespaceDefaults defaults = INSTANCE.namespaces.get(id.getNamespace());
         final String artist = defaults != null ? defaults.artist() : prettify(id.getNamespace());
-        final ResourceLocation cover = defaults != null && defaults.cover() != null
+        final Identifier cover = defaults != null && defaults.cover() != null
                 ? defaults.cover()
                 : DEFAULT_COVER;
         return new MusicInfo(id, fallbackTitle(id), artist, "", 0, cover);
     }
 
     /** {@code minecraft:music/game/calm1} devient {@code Calm 1}. */
-    private static String fallbackTitle(ResourceLocation id) {
+    private static String fallbackTitle(Identifier id) {
         final String path = id.getPath();
         final int slash = path.lastIndexOf('/');
         return prettify(slash >= 0 ? path.substring(slash + 1) : path);

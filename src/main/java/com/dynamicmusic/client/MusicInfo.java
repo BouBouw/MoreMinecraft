@@ -1,6 +1,6 @@
 package com.dynamicmusic.client;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Proprietes affichees par la vignette pour une piste donnee.
@@ -14,12 +14,12 @@ import net.minecraft.resources.ResourceLocation;
  *                 alors masquee)
  * @param cover    texture de la pochette, 64x64
  */
-public record MusicInfo(ResourceLocation id,
+public record MusicInfo(Identifier id,
                         String title,
                         String artist,
                         String album,
                         int duration,
-                        ResourceLocation cover) {
+                        Identifier cover) {
 
     public boolean hasArtist() {
         return !this.artist.isEmpty();

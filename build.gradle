@@ -1,8 +1,11 @@
 plugins {
-    id 'eclipse'
+    id 'java'
     id 'idea'
-    id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+    id 'eclipse'
+    // A partir de 1.21.11, Forge abandonne ForgeGradle 6 : l'empaquetage de
+    // l'userdev change et l'ancien plugin echoue dessus. La syntaxe du bloc
+    // minecraft et la declaration de la dependance sont differentes.
+    id 'net.minecraftforge.gradle' version '[7.0.3,8)'
 }
 
 version = mod_version
@@ -12,87 +15,48 @@ base {
     archivesName = mod_id
 }
 
-// Minecraft 1.21.10 tourne sur Java 21.
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
-}
+// Minecraft 1.21.11 tourne sur Java 21.
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
 
-    // Recopie les ressources de l'IDE vers les runs de developpement.
-    copyIdeResources = true
-
-    // Le bloc "mods" est repete dans chaque configuration plutot que factorise
-    // dans un configureEach : sous ForgeGradle 6, la variante factorisee ne
-    // transmet pas MOD_CLASSES. Forge retombe alors sur la detection par
-    // classpath, ne voit que build/resources/main, et refuse de demarrer avec
-    // "The following classes are missing, but are reported in the mods.toml".
     runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', ''
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', mod_id
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
+        configureEach {
+            workingDir = layout.projectDirectory.dir('run')
+            systemProperty 'eventbus.api.strictRuntimeChecks', 'true'
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
         }
+
+        register('client')
 
         // Utile uniquement pour verifier que le mod ne casse pas un serveur :
         // DynamicMusic n'a aucune logique serveur.
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', ''
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', mod_id
+        register('server') {
             args '--nogui'
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
         }
 
-        data {
-            workingDirectory project.file('run-data')
-            property 'forge.logging.markers', ''
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'),
-                    '--existing', file('src/main/resources/')
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
+        register('data') {
+            workingDir = layout.projectDirectory.dir('run-data')
+            args '--mod', mod_id, '--all',
+                    '--output', layout.projectDirectory.dir('src/generated/resources'),
+                    '--existing', layout.projectDirectory.dir('src/main/resources')
         }
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-// Depuis 1.20.2, Forge charge les mods de developpement par le chemin de
-// modules : un mod doit tenir dans un seul repertoire. Or Gradle ecrit les
-// classes dans build/classes/java/main et les ressources dans
-// build/resources/main. Sans cette ligne, Forge ne voit que le repertoire
-// contenant mods.toml et s'arrete sur "The following classes are missing, but
-// are reported in the mods.toml". On fait donc pointer les deux au meme endroit.
-sourceSets.main.output.resourcesDir = sourceSets.main.java.destinationDirectory
-
 repositories {
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
     mavenCentral()
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-}
-
-tasks.named('processResources', ProcessResources).configure {
-    // Aucun jeton a substituer : mods.toml est ecrit en dur pour eviter toute
-    // divergence entre le manifeste et les constantes Java.
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.5'
 }
 
 tasks.named('jar', Jar).configure {
@@ -106,15 +70,6 @@ tasks.named('jar', Jar).configure {
                 'Implementation-Vendor'   : mod_authors,
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
-    }
-}
-
-// La reobfuscation n'existe plus a partir de Forge 1.20.6 : le jeu tourne
-// desormais sur les mappings officiels. On ne branche la tache que si la
-// version ciblee la fournit, ce qui garde le meme build sur toutes les branches.
-afterEvaluate {
-    if (tasks.findByName('reobfJar') != null) {
-        tasks.named('jar').configure { finalizedBy 'reobfJar' }
     }
 }
 

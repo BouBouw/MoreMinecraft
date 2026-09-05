@@ -39,18 +39,17 @@ public final class ClientModEvents {
     }
 
     /**
-     * Tick client : une seule fois par tick, en phase END, pour travailler sur
-     * un etat de monde deja mis a jour.
+     * Tick client : une seule fois par tick, apres la mise a jour du monde,
+     * pour travailler sur un etat deja a jour.
      *
      * <p>La vignette est mise a jour avant le selecteur de musique et sans
      * condition sur la presence d'un monde : la musique du menu principal doit
      * elle aussi etre annoncee.</p>
      */
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) {
-            return;
-        }
+    public static void onClientTick(TickEvent.ClientTickEvent.Post event) {
+        // Depuis 1.21.9 le tick client est scinde en deux evenements distincts,
+        // Pre et Post, au lieu d'un seul porteur d'une phase.
         MusicNotifier.INSTANCE.tick(Minecraft.getInstance());
         ClientMusicHandler.INSTANCE.tick();
     }

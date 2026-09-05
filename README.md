@@ -1,6 +1,6 @@
 # DynamicMusic
 
-Mod **client uniquement** pour Minecraft Forge 1.20.4. Il remplace la musique
+Mod **client uniquement** pour Minecraft Forge 1.21.1. Il remplace la musique
 d'ambiance vanilla par un systeme contextuel avec fondu croise, et annonce
 chaque morceau par une vignette en haut a droite de l'ecran.
 
@@ -222,7 +222,7 @@ Un wrapper Gradle est fourni, rien d'autre a installer que le JDK.
 ```
 
 Le mod sort dans `build/libs/dynamicmusic-1.0.0.jar`. Copie-le dans le dossier
-`mods` de ton instance Minecraft, sur un profil **Forge 1.20.4**.
+`mods` de ton instance Minecraft, sur un profil **Forge 1.21.1**.
 
 Sous Windows, le dossier par defaut est `%appdata%\.minecraft\mods`.
 
@@ -252,11 +252,10 @@ mods.toml`.
 
 | Element | Version |
 | --- | --- |
-| Minecraft | 1.20.4 |
-| Forge | 49.0.38 |
+| Minecraft | 1.21.1 |
+| Forge | 52.1.16 |
 | Gradle | 8.9 (wrapper fourni) |
 | ForgeGradle | 6.0.54 |
-| JDK de compilation | 17 (chaine d'outils Gradle) |
+| JDK de compilation | 21 (chaine d'outils Gradle) |
 
-La compilation fonctionne avec Java 17 comme avec Java 21 : Gradle selectionne
-tout seul le JDK 17 pour compiler.
+Gradle selectionne tout seul le JDK 21 pour compiler.

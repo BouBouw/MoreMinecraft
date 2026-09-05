@@ -32,10 +32,10 @@ public final class MusicMetadata implements ResourceManagerReloadListener {
     public static final MusicMetadata INSTANCE = new MusicMetadata();
 
     private static final ResourceLocation FILE =
-            new ResourceLocation(DynamicMusic.MOD_ID, "music_metadata.json");
+            ResourceLocation.fromNamespaceAndPath(DynamicMusic.MOD_ID, "music_metadata.json");
 
     public static final ResourceLocation DEFAULT_COVER =
-            new ResourceLocation(DynamicMusic.MOD_ID, "textures/gui/music/default.png");
+            ResourceLocation.fromNamespaceAndPath(DynamicMusic.MOD_ID, "textures/gui/music/default.png");
 
     /** Table declaree, indexee par emplacement de fichier audio. */
     private final Map<ResourceLocation, MusicInfo> tracks = new HashMap<>();

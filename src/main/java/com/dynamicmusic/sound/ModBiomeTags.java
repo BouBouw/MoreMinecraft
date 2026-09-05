@@ -53,6 +53,6 @@ public final class ModBiomeTags {
     public static final TagKey<Biome> IS_PLAINS = create("is_plains");
 
     private static TagKey<Biome> create(String name) {
-        return TagKey.create(Registries.BIOME, new ResourceLocation(DynamicMusic.MOD_ID, name));
+        return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(DynamicMusic.MOD_ID, name));
     }
 }

@@ -107,7 +107,7 @@ public final class ModSounds {
      */
     private static RegistryObject<SoundEvent> register(String name) {
         return SOUND_EVENTS.register(name,
-                () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(DynamicMusic.MOD_ID, name)));
+                () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(DynamicMusic.MOD_ID, name)));
     }
 
     /** Branche le DeferredRegister sur le bus d'evenements du mod. */

@@ -34,7 +34,7 @@ public final class MusicToast implements Toast {
     public static final Object TOKEN = new Object();
 
     /** Fond des notifications du jeu, decoupe en neuf tranches donc etirable. */
-    private static final ResourceLocation BACKGROUND_SPRITE = new ResourceLocation("toast/advancement");
+    private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
 
     private static final int WIDTH = 200;
     private static final int HEIGHT = 48;

@@ -3,7 +3,7 @@ package com.dynamicmusic.client;
 import com.dynamicmusic.config.DynamicMusicConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -123,8 +123,13 @@ public final class MusicToast implements Toast {
                 : Toast.Visibility.SHOW;
     }
 
+    /**
+     * Depuis 26.1 le dessin ne s'appelle plus render mais extractRenderState :
+     * l'interface ne peint plus directement, elle alimente un extracteur d'etat
+     * de rendu.
+     */
     @Override
-    public void render(GuiGraphics graphics, Font font, long visibleMillis) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, Font font, long visibleMillis) {
         final MusicInfo info = MusicNotifier.INSTANCE.current();
         if (info != null) {
             drawPanel(graphics, font, info, true);
@@ -140,7 +145,7 @@ public final class MusicToast implements Toast {
      * depuis l'evenement de rendu de l'ecran, donc a chaque image tant que
      * l'ecran est affiche.
      */
-    public static void renderPinned(GuiGraphics graphics) {
+    public static void renderPinned(GuiGraphicsExtractor graphics) {
         if (MusicNotifier.isMusicMuted()) {
             return;
         }
@@ -172,7 +177,7 @@ public final class MusicToast implements Toast {
      *             entre deux morceaux, l'ecran des options montre la derniere
      *             piste jouee plutot que rien du tout.
      */
-    private static void drawPanel(GuiGraphics graphics, Font font, MusicInfo info, boolean live) {
+    private static void drawPanel(GuiGraphicsExtractor graphics, Font font, MusicInfo info, boolean live) {
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_SPRITE, 0, 0, WIDTH, HEIGHT);
 
         // Pochette : texture 64x64 reduite a 32x32.
@@ -183,25 +188,25 @@ public final class MusicToast implements Toast {
 
         final int textWidth = WIDTH - TEXT_X - PADDING;
 
-        graphics.drawString(font, ellipsize(font, info.title(), textWidth), TEXT_X, 9, COLOR_TITLE, false);
+        graphics.text(font, ellipsize(font, info.title(), textWidth), TEXT_X, 9, COLOR_TITLE, false);
 
         if (info.hasArtist()) {
-            graphics.drawString(font, ellipsize(font, info.artist(), textWidth), TEXT_X, 20, COLOR_ARTIST, false);
+            graphics.text(font, ellipsize(font, info.artist(), textWidth), TEXT_X, 20, COLOR_ARTIST, false);
         }
 
         if (live && info.hasDuration()) {
             final String time = MusicInfo.formatTime(MusicNotifier.INSTANCE.elapsedSeconds())
                     + " / " + MusicInfo.formatTime(info.duration());
-            graphics.drawString(font, time, TEXT_X, 31, COLOR_TIME, false);
+            graphics.text(font, time, TEXT_X, 31, COLOR_TIME, false);
             drawProgressBar(graphics, TEXT_X, 42, textWidth, MusicNotifier.INSTANCE.progress());
         } else if (!info.album().isEmpty()) {
-            graphics.drawString(font, ellipsize(font, info.album(), textWidth), TEXT_X, 31, COLOR_TIME, false);
+            graphics.text(font, ellipsize(font, info.album(), textWidth), TEXT_X, 31, COLOR_TIME, false);
         } else if (info.hasDuration()) {
-            graphics.drawString(font, MusicInfo.formatTime(info.duration()), TEXT_X, 31, COLOR_TIME, false);
+            graphics.text(font, MusicInfo.formatTime(info.duration()), TEXT_X, 31, COLOR_TIME, false);
         }
     }
 
-    private static void drawProgressBar(GuiGraphics graphics, int x, int y, int width, float progress) {
+    private static void drawProgressBar(GuiGraphicsExtractor graphics, int x, int y, int width, float progress) {
         if (progress < 0.0F) {
             return;
         }

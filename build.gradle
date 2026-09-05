@@ -15,8 +15,8 @@ base {
     archivesName = mod_id
 }
 
-// Minecraft 1.21.11 tourne sur Java 21.
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+// Minecraft 26.1 tourne sur Java 25.
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 

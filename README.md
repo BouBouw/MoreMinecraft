@@ -1,6 +1,6 @@
 # DynamicMusic
 
-Cette branche cible **Forge 1.20.4**. Le depot utilise une branche par couple
+Cette branche cible **Forge 1.20.2**. Le depot utilise une branche par couple
 version et chargeur : voir [PORTING.md](PORTING.md) pour la carte des cibles,
 les deltas mesures et la marche a suivre pour en ajouter une.
 

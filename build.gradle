@@ -12,7 +12,7 @@ base {
     archivesName = mod_id
 }
 
-// Minecraft 1.20.4 tourne sur Java 17.
+// Minecraft 1.20.2 tourne sur Java 17.
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }

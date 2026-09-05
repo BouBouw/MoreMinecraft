@@ -28,6 +28,6 @@ Mod entierement cote client : aucune installation serveur necessaire.
 [[dependencies.dynamicmusic]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.20.3,1.21)"
+    versionRange = "[1.20.3]"
     ordering = "NONE"
     side = "CLIENT"

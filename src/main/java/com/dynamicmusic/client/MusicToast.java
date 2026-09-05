@@ -86,7 +86,9 @@ public final class MusicToast implements Toast {
 
     /** Place la notification dans la file si elle n'y est pas deja. */
     public static void ensureVisible(Minecraft mc) {
-        final ToastManager toasts = mc.getToastManager();
+        // Depuis 26.2, l'ecran courant et les notifications sont accessibles
+        // par l'objet Gui et non plus directement sur Minecraft.
+        final ToastManager toasts = mc.gui.toastManager();
         if (toasts.getToast(MusicToast.class, TOKEN) == null) {
             toasts.addToast(new MusicToast());
         }

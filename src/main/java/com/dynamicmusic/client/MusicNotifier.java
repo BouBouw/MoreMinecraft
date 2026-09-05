@@ -188,7 +188,7 @@ public final class MusicNotifier {
         return DynamicMusicConfig.pinToastInOptions
                 && !isMusicMuted()
                 && displayInfo() != null
-                && isOptionsScreen(Minecraft.getInstance().screen);
+                && isOptionsScreen(Minecraft.getInstance().gui.screen());
     }
 
     /**

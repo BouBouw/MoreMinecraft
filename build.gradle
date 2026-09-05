@@ -12,7 +12,7 @@ base {
     archivesName = mod_id
 }
 
-// Minecraft 1.21.5 tourne sur Java 21.
+// Minecraft 1.21.6 tourne sur Java 21.
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(21)
 }

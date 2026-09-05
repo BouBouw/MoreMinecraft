@@ -3,7 +3,7 @@ package com.dynamicmusic.sound;
 import com.dynamicmusic.DynamicMusic;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -111,7 +111,7 @@ public final class ModSounds {
     }
 
     /** Branche le DeferredRegister sur le bus d'evenements du mod. */
-    public static void init(IEventBus modBus) {
+    public static void init(BusGroup modBus) {
         SOUND_EVENTS.register(modBus);
     }
 }

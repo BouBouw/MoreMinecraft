@@ -6,7 +6,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -151,11 +151,13 @@ public final class MusicToast implements Toast {
         final Minecraft mc = Minecraft.getInstance();
         final int x = graphics.guiWidth() - WIDTH - PINNED_MARGIN;
 
-        graphics.pose().pushPose();
-        // Au dessus des boutons de l'ecran, sous les infobulles.
-        graphics.pose().translate((float) x, (float) PINNED_MARGIN, 350.0F);
+        // Depuis 1.21.6 la pile de transformations de l'interface est en deux
+        // dimensions : plus de composante de profondeur, et pushMatrix remplace
+        // pushPose. Le panneau est de toute facon dessine apres l'ecran.
+        graphics.pose().pushMatrix();
+        graphics.pose().translate((float) x, (float) PINNED_MARGIN);
         drawPanel(graphics, mc.font, info, MusicNotifier.INSTANCE.isLive());
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 
     // ==================================================================
@@ -171,10 +173,10 @@ public final class MusicToast implements Toast {
      *             piste jouee plutot que rien du tout.
      */
     private static void drawPanel(GuiGraphics graphics, Font font, MusicInfo info, boolean live) {
-        graphics.blitSprite(RenderType::guiTextured, BACKGROUND_SPRITE, 0, 0, WIDTH, HEIGHT);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_SPRITE, 0, 0, WIDTH, HEIGHT);
 
         // Pochette : texture 64x64 reduite a 32x32.
-        graphics.blit(RenderType::guiTextured, info.cover(), PADDING, PADDING,
+        graphics.blit(RenderPipelines.GUI_TEXTURED, info.cover(), PADDING, PADDING,
                 0.0F, 0.0F, COVER_SIZE, COVER_SIZE,
                 COVER_TEXTURE_SIZE, COVER_TEXTURE_SIZE,
                 COVER_TEXTURE_SIZE, COVER_TEXTURE_SIZE);

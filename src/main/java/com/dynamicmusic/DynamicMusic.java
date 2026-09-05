@@ -4,7 +4,7 @@ import com.dynamicmusic.config.DynamicMusicConfig;
 import com.dynamicmusic.sound.ModSounds;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -26,7 +26,7 @@ public final class DynamicMusic {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public DynamicMusic() {
-        final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        final BusGroup modBus = FMLJavaModLoadingContext.get().getModBusGroup();
 
         // Enregistrement des SoundEvent (DeferredRegister).
         ModSounds.init(modBus);

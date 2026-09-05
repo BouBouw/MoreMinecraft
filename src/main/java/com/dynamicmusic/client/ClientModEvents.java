@@ -12,8 +12,8 @@ import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.Priority;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -69,7 +69,7 @@ public final class ClientModEvents {
      * <p>Aucun effet sur les autres categories sonores : blocs, mobs, meteo et
      * disques passent sans etre touches.</p>
      */
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = Priority.HIGH)
     public static void onPlaySound(PlaySoundEvent event) {
         final SoundInstance sound = event.getSound();
         if (sound == null || sound.getSource() != SoundSource.MUSIC) {

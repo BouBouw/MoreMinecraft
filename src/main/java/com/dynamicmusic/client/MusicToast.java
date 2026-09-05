@@ -5,7 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
-import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -27,6 +28,11 @@ import net.minecraft.resources.ResourceLocation;
  *
  * <p>Les deux formes ne coexistent jamais : la notification s'efface des qu'un
  * ecran d'options est ouvert.</p>
+ *
+ * <p>Depuis 1.21.2, le systeme de notifications est scinde en deux : {@code update}
+ * decide de la visibilite, {@code render} ne fait plus que dessiner. Le
+ * gestionnaire s'appelle desormais {@code ToastManager} et le dessin passe par
+ * une fonction de type de rendu.</p>
  */
 public final class MusicToast implements Toast {
 
@@ -52,6 +58,8 @@ public final class MusicToast implements Toast {
     private static final int COLOR_BAR_BG = 0xFF3A3A3A;
     private static final int COLOR_BAR_FG = 0xFFB4A8E0;
 
+    /** Visibilite demandee au gestionnaire, calculee dans update. */
+    private Toast.Visibility wanted = Toast.Visibility.SHOW;
     /** Derniere generation vue : un changement relance le minuteur d'affichage. */
     private long seenGeneration = -1L;
     /** Instant, en millisecondes de visibilite, ou le minuteur a ete relance. */
@@ -78,28 +86,28 @@ public final class MusicToast implements Toast {
 
     /** Place la notification dans la file si elle n'y est pas deja. */
     public static void ensureVisible(Minecraft mc) {
-        final ToastComponent toasts = mc.getToasts();
+        final ToastManager toasts = mc.getToastManager();
         if (toasts.getToast(MusicToast.class, TOKEN) == null) {
             toasts.addToast(new MusicToast());
         }
     }
 
     @Override
-    public Toast.Visibility render(GuiGraphics graphics, ToastComponent component, long visibleMillis) {
+    public Toast.Visibility getWantedVisibility() {
+        return this.wanted;
+    }
+
+    /** Toute la decision d'affichage vit ici depuis 1.21.2, le rendu ne fait plus que dessiner. */
+    @Override
+    public void update(ToastManager manager, long visibleMillis) {
         // Volume musique a zero : rien a annoncer.
-        if (MusicNotifier.isMusicMuted()) {
-            return Toast.Visibility.HIDE;
-        }
-
-        // Un ecran d'options est ouvert : le panneau epingle prend le relais,
-        // la notification s'efface pour ne pas s'afficher en double.
-        if (MusicNotifier.INSTANCE.isPinned()) {
-            return Toast.Visibility.HIDE;
-        }
-
-        final MusicInfo info = MusicNotifier.INSTANCE.current();
-        if (info == null) {
-            return Toast.Visibility.HIDE;
+        // Ecran d'options ouvert : le panneau epingle prend le relais, la
+        // notification s'efface pour ne pas s'afficher en double.
+        if (MusicNotifier.isMusicMuted()
+                || MusicNotifier.INSTANCE.isPinned()
+                || MusicNotifier.INSTANCE.current() == null) {
+            this.wanted = Toast.Visibility.HIDE;
+            return;
         }
 
         // Nouveau morceau : le minuteur repart, la vignette reste a l'ecran.
@@ -109,12 +117,18 @@ public final class MusicToast implements Toast {
             this.lastChanged = visibleMillis;
         }
 
-        drawPanel(graphics, component.getMinecraft().font, info, true);
-
         final long displayMillis = DynamicMusicConfig.toastSeconds * 1000L;
-        return visibleMillis - this.lastChanged >= displayMillis
+        this.wanted = visibleMillis - this.lastChanged >= displayMillis
                 ? Toast.Visibility.HIDE
                 : Toast.Visibility.SHOW;
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, Font font, long visibleMillis) {
+        final MusicInfo info = MusicNotifier.INSTANCE.current();
+        if (info != null) {
+            drawPanel(graphics, font, info, true);
+        }
     }
 
     // ==================================================================
@@ -157,11 +171,12 @@ public final class MusicToast implements Toast {
      *             piste jouee plutot que rien du tout.
      */
     private static void drawPanel(GuiGraphics graphics, Font font, MusicInfo info, boolean live) {
-        graphics.blitSprite(BACKGROUND_SPRITE, 0, 0, WIDTH, HEIGHT);
+        graphics.blitSprite(RenderType::guiTextured, BACKGROUND_SPRITE, 0, 0, WIDTH, HEIGHT);
 
         // Pochette : texture 64x64 reduite a 32x32.
-        graphics.blit(info.cover(), PADDING, PADDING, COVER_SIZE, COVER_SIZE,
-                0.0F, 0.0F, COVER_TEXTURE_SIZE, COVER_TEXTURE_SIZE,
+        graphics.blit(RenderType::guiTextured, info.cover(), PADDING, PADDING,
+                0.0F, 0.0F, COVER_SIZE, COVER_SIZE,
+                COVER_TEXTURE_SIZE, COVER_TEXTURE_SIZE,
                 COVER_TEXTURE_SIZE, COVER_TEXTURE_SIZE);
 
         final int textWidth = WIDTH - TEXT_X - PADDING;

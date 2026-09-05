@@ -240,7 +240,7 @@ public final class ClientMusicHandler {
         if (event == null) {
             return false;
         }
-        return Minecraft.getInstance().getSoundManager().getSoundEvent(event.getLocation()) != null;
+        return Minecraft.getInstance().getSoundManager().getSoundEvent(event.location()) != null;
     }
 
     // ==================================================================
@@ -598,7 +598,7 @@ public final class ClientMusicHandler {
             return false;
         }
         final WeighedSoundEvents events =
-                Minecraft.getInstance().getSoundManager().getSoundEvent(candidate.getLocation());
+                Minecraft.getInstance().getSoundManager().getSoundEvent(candidate.location());
         if (events == null) {
             return false;
         }

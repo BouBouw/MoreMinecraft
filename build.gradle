@@ -107,7 +107,15 @@ tasks.named('jar', Jar).configure {
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
-    finalizedBy 'reobfJar'
+}
+
+// La reobfuscation n'existe plus a partir de Forge 1.20.6 : le jeu tourne
+// desormais sur les mappings officiels. On ne branche la tache que si la
+// version ciblee la fournit, ce qui garde le meme build sur toutes les branches.
+afterEvaluate {
+    if (tasks.findByName('reobfJar') != null) {
+        tasks.named('jar').configure { finalizedBy 'reobfJar' }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {

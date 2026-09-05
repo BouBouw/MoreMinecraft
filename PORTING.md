@@ -1,98 +1,146 @@
 # Portage : versions et chargeurs
 
-## Pourquoi plusieurs branches et non un seul jar
+## Pourquoi une branche par cible
 
 Un jar de mod ne peut couvrir **ni plusieurs chargeurs, ni plusieurs lignes de
 version**. Ce n'est pas une limite de ce projet, c'est ainsi que fonctionne le
 modding Minecraft.
 
-**Les chargeurs sont mutuellement incompatibles.** Forge, NeoForge, Fabric et
-Quilt ont des points d'entree, des manifestes et des systemes d'evenements
-differents. Aucun jar ne se charge sur plus d'un. Les mods multi-chargeurs
-partagent un code source et publient un jar par chargeur.
+Les chargeurs Forge, NeoForge, Fabric et Quilt ont des points d'entree, des
+manifestes et des systemes d'evenements differents et mutuellement
+incompatibles. Chaque ligne majeure de Forge vise par ailleurs un binaire
+Minecraft precis, avec ses mappings et sa version de Java.
 
-**Chaque ligne majeure de Forge vise un binaire Minecraft precis.** La ligne 49
-est 1.20.4, la 52 est 1.21.1, la 65 est 26.2. Le jar est lie a un jeu de
-mappings et a une version de Java.
+D'ou une branche Git par couple version et chargeur, nommee
+`<version>-<chargeur>`.
 
-D'ou le choix d'**une branche Git par couple version + chargeur**, nommee
-`<version>-<chargeur>`, par exemple `1.20.4-forge` ou `1.21.1-forge`.
+## Branches Forge livrees
 
-## Etat des branches
+Toutes compilent. La derniere colonne indique si le chargement reel du mod a
+ete verifie en lancant le jeu en mode generateur de donnees, ce qui exerce le
+manifeste, la classe principale et les registres.
 
-| Branche | Minecraft | Chargeur | Version du chargeur | Java | Etat |
-| --- | --- | --- | --- | --- | --- |
-| `main` | 1.20.4 | Forge | 49.2.8 | 17 | Compile, chargement verifie |
-| `1.20.4-forge` | 1.20.3 et 1.20.4 | Forge | 49.2.8 | 17 | Compile, chargement verifie |
-| `1.21.1-forge` | 1.21.1 | Forge | 52.1.16 | 21 | Compile, chargement verifie |
+| Branche | Forge | Java | Pack | Chargement |
+| --- | --- | --- | --- | --- |
+| `1.20.2-forge` | 48.1.0 | 17 | 18 | verifie |
+| `1.20.3-forge` | 49.0.2 | 17 | 22 | verifie |
+| `1.20.4-forge` et `main` | 49.0.38 | 17 | 22 | verifie |
+| `1.20.6-forge` | 50.2.10 | 21 | 32 | verifie |
+| `1.21-forge` | 51.0.33 | 21 | 34 | **impossible**, voir ci-dessous |
+| `1.21.1-forge` | 52.1.16 | 21 | 34 | verifie |
+| `1.21.3-forge` | 53.1.12 | 21 | 42 | verifie |
+| `1.21.4-forge` | 54.1.18 | 21 | 46 | verifie |
+| `1.21.5-forge` | 55.1.13 | 21 | 55 | verifie |
+| `1.21.6-forge` | 56.0.9 | 21 | 63 | verifie |
+| `1.21.7-forge` | 57.0.3 | 21 | 64 | verifie |
+| `1.21.8-forge` | 58.1.22 | 21 | 64 | verifie |
+| `1.21.9-forge` | 59.0.5 | 21 | 69 | verifie |
+| `1.21.10-forge` | 60.1.15 | 21 | 69 | verifie |
+| `1.21.11-forge` | 61.2.1 | 21 | 75 | verifie |
+| `26.1-forge` | 62.0.9 | 25 | 84 | verifie |
+| `26.1.1-forge` | 63.0.2 | 25 | 84 | verifie |
+| `26.1.2-forge` | 64.1.3 | 25 | 84 | verifie |
+| `26.2-forge` | 65.1.3 | 25 | 88 | verifie |
 
-Le plancher de fonctionnalites est **1.20.2** : le fond des vignettes utilise
-l'atlas de sprites d'interface, apparu a cette version. En dessous, il faudrait
-un autre chemin de rendu.
+**1.21 fait exception.** Le build Forge 51.0.33 oublie `jopt-simple` sur le
+chemin de modules des runs de developpement, et modlauncher s'arrete dessus. Le
+defaut est en amont et ne touche pas le jar publie, qui compile normalement. La
+verification a ete faite sur 1.21.1, qui partage la meme API cliente et n'a
+demande aucune modification de source. En cas de doute, preferer `1.21.1-forge`.
 
-## Delta mesure entre 1.20.4 et 1.21.1
+## Plancher et plafond
 
-Constate au compilateur, pas suppose. C'est la reference pour les portages
-suivants dans la meme famille.
+Le plancher est **1.20.2** : le fond des vignettes utilise l'atlas de sprites
+d'interface, apparu a cette version. En 1.20 et 1.20.1 il faudrait un autre
+chemin de rendu, donc le mod y perdrait une fonctionnalite.
 
-| Ce qui change | Detail |
+Le plafond est **26.2**, la derniere version sortie au moment de ce portage.
+
+## Les quatre ruptures d'API traversees
+
+Mesurees au compilateur, pas supposees. Entre deux ruptures, un portage se
+resume a changer trois numeros.
+
+### 1.21 : identifiants et ecrans
+
+- Le constructeur public de `ResourceLocation` disparait, remplace par
+  `fromNamespaceAndPath` et `withDefaultNamespace`.
+- Les ecrans d'options passent dans `net.minecraft.client.gui.screens.options`.
+- `reobfJar` disparait depuis Forge 1.20.6, le jeu tournant sur les mappings
+  officiels.
+
+### 1.21.2 : refonte des vignettes
+
+- `ToastComponent` devient `ToastManager`, `Minecraft.getToasts` devient
+  `getToastManager`.
+- `Toast` se scinde : `getWantedVisibility` decide, `update` calcule, `render`
+  ne fait plus que dessiner et ne renvoie plus rien.
+- `blitSprite` et `blit` prennent une fonction de type de rendu.
+- `SoundEvent.getLocation` devient `location`.
+
+### 1.21.6 : bus d'evenements et moteur de rendu
+
+- EventBus 7 : `SubscribeEvent` et `Priority` passent dans `api.listener`,
+  `EventPriority` disparait au profit de constantes `byte`. `IEventBus` devient
+  `BusGroup`, `getModEventBus` devient `getModBusGroup`.
+- `blitSprite` et `blit` prennent un `RenderPipeline`.
+- La pile de transformations de l'interface devient bidimensionnelle,
+  `Matrix3x2fStack` : `pushMatrix` remplace `pushPose`, la profondeur disparait.
+
+### 1.21.11 : renommage et changement d'outil
+
+- `ResourceLocation` devient `Identifier`, dans `net.minecraft.resources`.
+- `SoundInstance.getLocation` devient `getIdentifier`.
+- ForgeGradle 6 echoue sur l'userdev de Forge 61. Forge exige ForgeGradle 7,
+  qui exige lui-meme Gradle 9.3. Les branches a partir de 1.21.11 ont donc un
+  wrapper Gradle 9.3 la ou les precedentes restent en 8.9.
+- Le reglage `merge-source-sets` remplace l'ajustement manuel de `resourcesDir`.
+
+### 26.1 puis 26.2 : extraction d'etat de rendu
+
+- `GuiGraphics` devient `GuiGraphicsExtractor` : l'objet ne peint plus
+  directement, il alimente un extracteur d'etat de rendu.
+- `Toast.render` devient `extractRenderState`, `drawString` devient `text`.
+- Java 25.
+- En 26.2, l'ecran courant et le gestionnaire de notifications passent sur
+  l'objet `Gui` : `mc.gui.screen()` et `mc.gui.toastManager()`.
+
+## Changements plus discrets
+
+| Version | Changement |
 | --- | --- |
-| `ResourceLocation` | Constructeur public supprime en 1.21. Utiliser `fromNamespaceAndPath` et `withDefaultNamespace`. |
-| Ecrans d'options | Deplaces dans `net.minecraft.client.gui.screens.options`. |
-| `reobfJar` | N'existe plus depuis Forge 1.20.6, le jeu tournant sur les mappings officiels. La tache n'est branchee que si elle existe. |
-| Java | 17 jusqu'a 1.20.4, 21 a partir de 1.20.5. |
-| Format de pack | 22 en 1.20.3 et 1.20.4, 32 en 1.20.5 et 1.20.6, 34 en 1.21 et 1.21.1. Au dela, a verifier version par version. |
+| 1.20.5 | Java passe de 17 a 21 |
+| 1.21.5 | `Level.isNight` disparait, reconstruit avec la lumiere celeste et l'heure figee de la dimension |
+| 1.21.9 | Le tick client se scinde en `ClientTickEvent.Pre` et `ClientTickEvent.Post`, la notion de phase disparait |
+| 1.21.9 | Le manifeste du jeu expose `resource_major` au lieu de `resource` |
 
-Ce qui n'a **pas** bouge et compile tel quel : `TickEvent`, `PlaySoundEvent`,
-`ForgeConfigSpec`, l'API des vignettes, `blitSprite`, les tags de biomes,
-`ScreenEvent`, `RegisterClientReloadListenersEvent`, `AbstractTickableSoundInstance`.
+## Ce qui n'a jamais bouge
 
-## Ruptures connues plus loin
+D'un bout a l'autre, de 1.20.2 a 26.2 : `PlaySoundEvent`, `ForgeConfigSpec`,
+`DeferredRegister`, `AbstractTickableSoundInstance`, `ScreenEvent`,
+`RegisterClientReloadListenersEvent`, les tags de biomes, `Biome.hasPrecipitation`,
+`Sound.getLocation`, `Minecraft.getSoundManager`.
 
-A anticiper avant d'attaquer ces cibles.
+## Reste a faire
 
-| A partir de | Rupture |
+NeoForge, Fabric et Quilt. Chacun demande un jar par version, donc autant de
+branches supplementaires, et un travail different du portage de version.
+
+| Chargeur | Nature du travail |
 | --- | --- |
-| 1.21.2 | Le systeme de vignettes est refondu. `Toast.render` change de signature et `ToastComponent` devient `ToastManager`. C'est le plus gros morceau pour ce mod. |
-| 1.21.2 | `blitSprite` prend un parametre de type de rendu. |
-| 1.21.11 | Mojang renomme `ResourceLocation` en `Identifier`. Derniere version obfusquee. |
-| 26.x | Java 25 requis. |
-| NeoForge | `ForgeConfigSpec` devient `ModConfigSpec`, `RegistryObject` devient `DeferredHolder`, le manifeste devient `META-INF/neoforge.mods.toml`. |
-| Fabric | Aucun equivalent de `PlaySoundEvent`. La capture des musiques demande un Mixin dans `SoundEngine`. Registres, config et evenements sont a reecrire. |
+| NeoForge | Proche de Forge. `ForgeConfigSpec` devient `ModConfigSpec`, `RegistryObject` devient `DeferredHolder`, le manifeste devient `META-INF/neoforge.mods.toml`. |
+| Fabric | Reecriture. Aucun equivalent de `PlaySoundEvent` : la capture des musiques demande un Mixin dans `SoundEngine`. Registres, configuration et evenements sont a refaire. |
+| Quilt | Fork de Fabric, compatible avec ses mods. Le jar Fabric suffit dans la plupart des cas. |
 
-## Cibles Forge disponibles
-
-Numeros releves sur `promotions_slim.json` de Forge.
-
-| Minecraft | Forge | Minecraft | Forge |
-| --- | --- | --- | --- |
-| 1.20 | 46.0.14 | 1.21.4 | 54.1.18 |
-| 1.20.1 | 47.4.23 | 1.21.5 | 55.1.13 |
-| 1.20.2 | 48.1.0 | 1.21.6 | 56.0.9 |
-| 1.20.3 | 49.0.2 | 1.21.7 | 57.0.3 |
-| 1.20.4 | 49.2.8 | 1.21.8 | 58.1.22 |
-| 1.20.6 | 50.2.10 | 1.21.9 | 59.0.5 |
-| 1.21 | 51.0.33 | 1.21.10 | 60.1.15 |
-| 1.21.1 | 52.1.16 | 1.21.11 | 61.2.1 |
-| 1.21.3 | 53.1.12 | 26.1 | 62.0.9 |
-| | | 26.2 | 65.1.3 |
-
-## Creer une nouvelle branche de cible
+## Ajouter une cible
 
 ```bash
 tools/new-target.sh <version-minecraft> <version-forge> <java> <format-de-pack>
 ```
 
-Exemple pour 1.21 :
-
-```bash
-tools/new-target.sh 1.21 51.0.33 21 34
-```
-
-Le script cree la branche depuis la base la plus proche, applique les
-changements mecaniques (versions, Java, format de pack, plage dans
-`mods.toml`) et lance la compilation. Le reste se fait en suivant les erreurs
-du compilateur, qui est la seule source de verite fiable sur ce qui a change.
+Partir de la branche la plus proche : meme version de Java et meme cote de la
+derniere rupture. Le script applique les changements mecaniques, puis c'est le
+compilateur qui dit ce qui reste, et il est la seule source de verite fiable.
 
 Verifier ensuite le chargement reel :
 
@@ -101,5 +149,4 @@ Verifier ensuite le chargement reel :
 ```
 
 La ligne `[DynamicMusic] Initialisation cote client.` suivie de
-`BUILD SUCCESSFUL` signifie que le mod se charge : manifeste valide, classe
-principale trouvee, registres passes.
+`BUILD SUCCESSFUL` signifie que le mod se charge.

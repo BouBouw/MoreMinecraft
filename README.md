@@ -1,8 +1,11 @@
 # DynamicMusic
 
-Cette branche cible **Forge 1.20.4**. Le depot utilise une branche par couple
-version et chargeur : voir [PORTING.md](PORTING.md) pour la carte des cibles,
-les deltas mesures et la marche a suivre pour en ajouter une.
+Cette branche cible **Forge 1.20.4**.
+
+Le mod existe sur **19 branches**, une par version de Minecraft, de 1.20.2
+jusqu'a 26.2. Toutes compilent et 18 sur 19 ont vu leur chargement verifie en
+lancant le jeu. Voir [PORTING.md](PORTING.md) pour le tableau complet, les
+quatre ruptures d'API traversees et la marche a suivre pour ajouter une cible.
 
 Mod **client uniquement** pour Minecraft Forge 1.20.4. Il remplace la musique
 d'ambiance vanilla par un systeme contextuel avec fondu croise, et annonce
